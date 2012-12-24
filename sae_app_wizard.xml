@@ -1,0 +1,45 @@
+<appwizard> 
+	<introduction> 
+		<name>MediaWiKi</name> 
+		<author>MediaWiKi ＆＆ Jimmy</author> 
+		<icon></icon> 
+		<homepage>http://www.mediawiki.org/</homepage> 
+		<description> 
+		<![CDATA[
+		MediaWiki 是一套以GPL授权发行的Wiki引擎。
+		它具有很丰富的功能，并被维基百科及其他维基媒体基金会的计划所采用，亦为世界上很多不同的维基所采用。
+		MediaWiki采用 PHP语言写成，并以MySQL作为其资料库。它的徽标图像化了它如何运用标记语言即双括号 ("","") 来连结不同的文章。
+		MediaWiki具有很高的相容性和可塑性，现在的版本支持memcached及Squid cache系统，亦支持TeX数学公式。
+		其扩展系统允许用户自行添加他们需要的特性及客制化程式介面。
+		]]>
+		</description> 
+	</introduction> 
+	<platform> 
+		<services> 
+			<service name="mediawiki"  params="public">Storage</service> 
+			<service size="16M">Memcache</service> 
+			<service>Mysql</service> 
+		</services> 
+		<appconfig> 
+			<tpl> 
+            <![CDATA[
+name: <<appname>>
+version: <<version>>
+handle:
+	- hostaccess: if(path ~ "/cache/") deny "*"
+	- hostaccess: if(path ~ "/includes/") deny "*"
+	- hostaccess: if(path ~ "/languages/") deny "*"
+	- hostaccess: if(path ~ "/maintenance/") deny "*"
+	- hostaccess: if(path ~ "/match/") deny "*"
+	- hostaccess: if(path ~ "/serialized/") deny "*"
+	- hostaccess: if(path ~ "/maintenance/archives/") deny "*"
+	- rewrite: if( query_string ~ "/(.*):(.*)" ) goto "/index.php/$1:$2"
+	- rewrite: if( !is_file() && !is_dir() && query_string !~ "index\.php" ) goto "index.php/{QUERY_STRING}"
+            ]]>
+			</tpl> 
+		</appconfig> 
+	</platform> 
+	<code> 
+	<initScript>mw-config/?page=Welcome</initScript> 
+	</code> 
+</appwizard> 
